@@ -5,7 +5,7 @@ will be executed, how long the coroutine should exist for, what should happen if
 error, and more. Coroutines follow the principle of **structured concurrency**, which enforces you to answer these 
 questions when you use coroutines in your code using a combination of mechanisms.
 
-# Job
+## 1. Job
 When you launch a coroutine with the **launch()** function, it returns an instance of **Job**. The Job holds a handle,
 or reference, to the coroutine, so you can manage its lifecycle.
 
@@ -25,11 +25,11 @@ completed at that point.
 
 Jobs also keep track of the parent-child relationship among coroutines.
 
-## Job Hierarchy
+### Job Hierarchy
 When a coroutine launches another coroutine, the job that returns from the new coroutine is called the child of
 the original parent job.
 
-```bash
+```bash theme
 val job = launch {
     ...            
 
@@ -48,7 +48,7 @@ program.
  - If a job fails with an exception, it cancels its parent with that exception. This is known as propagating 
    the error upwards (to the parent, the parent's parent, and so on). .
 
-# Coroutine Scope
+## 2. Coroutine Scope
 Coroutines are typically launched into a **CoroutineScope**. This ensures that we don't have coroutines that are 
 unmanaged and get lost, which could waste resources.
 
@@ -71,4 +71,4 @@ For example, say you start a coroutine in an Activity with the provided coroutin
 
 In the `Race Tracker Android app` you will be working on, you'll learn a way to scope your coroutines to the lifecycle of a composable.
 
-# CoroutineContext
+## 3. CoroutineContext

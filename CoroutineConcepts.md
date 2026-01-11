@@ -9,6 +9,7 @@ Job
 ===
 When you launch a coroutine with the **launch()** function, it returns an instance of **Job**. The Job holds a handle,
 or reference, to the coroutine, so you can manage its lifecycle.
-`
-val job = launch { ... }
-`
+
+`val job = launch { ... }`
+**Note:** The **Deferred** object that is returned from a coroutine started with the **async()** function is a Job as well, 
+and it holds the future result of the coroutine.

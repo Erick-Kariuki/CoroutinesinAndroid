@@ -16,3 +16,5 @@ enabling multiple tasks to run concurrently.
 Through this repo, I was able to learn:
  - How Kotlin coroutines can simplify asynchronous programming
  - The purpose of structured concurrency and why it matters
+ - More coroutines concepts, and the roles they each play in shaping the lifecycle and behavior of a coroutine.
+For more coroutines concepts, checkout the `CoroutinesConcepts.md` file in the project structure.

@@ -174,4 +174,52 @@ fun main() {
     }
 }
  ```
+Switching dispatchers is possible because `withContext()` is itself a **suspending function**. It executes the provided
+block of code using a new `CoroutineContext`. The new context comes from the context of the parent job (the outer 
+`launch()` block), except it overrides the dispatcher used in the parent context with the one specified here: 
+`Dispatchers.Default`. This is how we are able to go from executing work with `Dispatchers.Main` to using 
+`Dispatchers.Default`.
+
+ 3. Run the program. The output should be:
+``
+    Loading...
+    10 results found.
+``
+ 4. Add print statements to see what thread you are on by calling `Thread.currentThread().name`.
+```bash
+ import kotlinx.coroutines.*
+
+fun main() {
+    runBlocking {
+        println("${Thread.currentThread().name} - runBlocking function")
+                launch {
+            println("${Thread.currentThread().name} - launch function")
+            withContext(Dispatchers.Default) {
+                println("${Thread.currentThread().name} - withContext function")
+                delay(1000)
+                println("10 results found.")
+            }
+            println("${Thread.currentThread().name} - end of launch function")
+        }
+        println("Loading...")
+    }
+} 
+ ```
+ 5. Run the program. The output should be:
+``
+    main @coroutine#1 - runBlocking function
+    Loading...
+    main @coroutine#2 - launch function
+    DefaultDispatcher-worker-1 @coroutine#2 - withContext function
+    10 results found.
+    main @coroutine#2 - end of launch function
+``
+From this output, you can observe that most of the code is executed in coroutines on the **main thread**. However, for the portion of your code in the `withContext(Dispatchers.Default)` block, that is executed in a coroutine on a Default Dispatcher worker thread (which is not the main thread). Notice that after withContext() returns, the coroutine returns to running on the main thread (as evidenced by output statement: main @coroutine#2 - end of launch function). This example demonstrates that you can switch the dispatcher by modifying the context that is used for the coroutine.
+
+If you have coroutines that were started on the **main thread**, and you want to move certain operations off the main thread, then you can use `withContext` to switch the dispatcher being used for that work. Choose appropriately from the available dispatchers: `Main`, `Default`, and `IO` depending on the type of operation it is. Then that work can be assigned to a thread (or group of threads called a thread pool) designated for that purpose. Coroutines can suspend themselves, and the dispatcher also influences how they resume.
+
+Note that when working with popular libraries like `Room` and `Retrofit`, you may not have to explicitly switch the dispatcher yourself if the library code already handles doing this work using an alternative coroutine dispatcher like `Dispatchers.IO`. In those cases, the suspend functions that those libraries reveal may already be **main-safe** and can be called from a coroutine running on the **main thread**. The library itself will handle switching the dispatcher to one that uses worker threads.
+
+Now we've got a high-level overview of the important parts of coroutines and the role that `CoroutineScope`, `CoroutineContext`, `CoroutineDispatcher`, and Jobs play in shaping the lifecycle and behavior of a coroutine.
+
 

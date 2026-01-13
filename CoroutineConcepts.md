@@ -222,6 +222,6 @@ If you have coroutines that were started on the **main thread**, and you want to
 
 Note that when working with popular libraries like `Room` and `Retrofit`, you may not have to explicitly switch the dispatcher yourself if the library code already handles doing this work using an alternative coroutine dispatcher like `Dispatchers.IO`. In those cases, the suspend functions that those libraries reveal may already be **main-safe** and can be called from a coroutine running on the **main thread**. The library itself will handle switching the dispatcher to one that uses worker threads.
 
-Now we've got a high-level overview of the important parts of coroutines and the role that `CoroutineScope`, `CoroutineContext`, `CoroutineDispatcher`, and Jobs play in shaping the lifecycle and behavior of a coroutine.
+Now we've got a high-level overview of the important parts of coroutines and the role that **`CoroutineScope`**, **`CoroutineContext`**, **`CoroutineDispatcher`**, and Jobs play in shaping the lifecycle and behavior of a coroutine.
 
 

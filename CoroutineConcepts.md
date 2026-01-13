@@ -206,14 +206,15 @@ fun main() {
 } 
  ```
  5. Run the program. The output should be:
-``
+
+`
     main @coroutine#1 - runBlocking function
     Loading...
     main @coroutine#2 - launch function
     DefaultDispatcher-worker-1 @coroutine#2 - withContext function
     10 results found.
     main @coroutine#2 - end of launch function
-``
+`
 From this output, you can observe that most of the code is executed in coroutines on the **main thread**. However, for the portion of your code in the `withContext(Dispatchers.Default)` block, that is executed in a coroutine on a Default Dispatcher worker thread (which is not the main thread). Notice that after withContext() returns, the coroutine returns to running on the main thread (as evidenced by output statement: main @coroutine#2 - end of launch function). This example demonstrates that you can switch the dispatcher by modifying the context that is used for the coroutine.
 
 If you have coroutines that were started on the **main thread**, and you want to move certain operations off the main thread, then you can use `withContext` to switch the dispatcher being used for that work. Choose appropriately from the available dispatchers: `Main`, `Default`, and `IO` depending on the type of operation it is. Then that work can be assigned to a thread (or group of threads called a thread pool) designated for that purpose. Coroutines can suspend themselves, and the dispatcher also influences how they resume.
